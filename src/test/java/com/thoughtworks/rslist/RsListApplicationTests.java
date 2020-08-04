@@ -116,4 +116,15 @@ class RsListApplicationTests {
                 .andExpect(jsonPath("$.keyword", is("又要修改的分类")))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void shouldDeleteRsEventGivenIndex() throws Exception {
+        mockMvc.perform(post("/rs/update/1"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/rs/list"))
+                .andExpect(jsonPath("$[0].eventName", is("又要修改的事件")))
+                .andExpect(jsonPath("$[0].keyword", is("分类二")))
+                .andExpect(status().isOk());
+    }
 }
