@@ -12,20 +12,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class RsListApplicationTests {
 
     private MockMvc mockMvc;
-
-    @Test
-    void contextLoads() throws Exception {
-        mockMvc.perform(get("/rs/list"))
-                .andExpect(content().string("[第一条事件, 第二条事件, 第三条事件]"))
-                .andExpect(status().isOk());
-    }
 
     @BeforeEach
     void initMockMvc() {
