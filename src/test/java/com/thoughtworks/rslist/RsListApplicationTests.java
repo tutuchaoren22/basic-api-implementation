@@ -38,5 +38,29 @@ class RsListApplicationTests {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void shouldGetRsEventGivenStartAndEnd() throws Exception {
+        mockMvc.perform(get("/rs/list/?start=1&end=2"))
+                .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
+                .andExpect(jsonPath("$[0].keyword", is("分类一")))
+                .andExpect(jsonPath("$[1].eventName", is("第二条事件")))
+                .andExpect(jsonPath("$[1].keyword", is("分类二")))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/list/?start=2&end=3"))
+                .andExpect(jsonPath("$[0].eventName", is("第二条事件")))
+                .andExpect(jsonPath("$[0].keyword", is("分类二")))
+                .andExpect(jsonPath("$[1].eventName", is("第三条事件")))
+                .andExpect(jsonPath("$[1].keyword", is("分类三")))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/list/?start=1&end=3"))
+                .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
+                .andExpect(jsonPath("$[0].keyword", is("分类一")))
+                .andExpect(jsonPath("$[1].eventName", is("第二条事件")))
+                .andExpect(jsonPath("$[1].keyword", is("分类二")))
+                .andExpect(jsonPath("$[2].eventName", is("第三条事件")))
+                .andExpect(jsonPath("$[2].keyword", is("分类三")))
+                .andExpect(status().isOk());
+    }
+
 
 }
