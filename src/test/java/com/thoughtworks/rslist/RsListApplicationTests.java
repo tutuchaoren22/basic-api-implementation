@@ -67,7 +67,9 @@ class RsListApplicationTests {
     @Test
     void shouldAddRsEventGivenEventNametAndKeyword() throws Exception {
         String requestJson = "{\"eventName\":\"第四条事件\",\"keyword\":\"分类四\"}";
-        mockMvc.perform(post("/rs/add").content(requestJson).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/rs/add")
+                .content(requestJson)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/rs/list"))
@@ -82,5 +84,36 @@ class RsListApplicationTests {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void shouldUpdateRsEventGivenIndex() throws Exception {
+        String requestJsonAll = "{\"eventName\":\"要修改的事件\",\"keyword\":\"要修改的分类\"}";
+        mockMvc.perform(post("/rs/update/1")
+                .content(requestJsonAll)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/list/1"))
+                .andExpect(jsonPath("$.eventName", is("要修改的事件")))
+                .andExpect(jsonPath("$.keyword", is("要修改的分类")))
+                .andExpect(status().isOk());
 
+        String requestJsonOnlyEventName = "{\"eventName\":\"又要修改的事件\"}";
+        mockMvc.perform(post("/rs/update/2")
+                .content(requestJsonOnlyEventName)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/list/2"))
+                .andExpect(jsonPath("$.eventName", is("又要修改的事件")))
+                .andExpect(jsonPath("$.keyword", is("分类二")))
+                .andExpect(status().isOk());
+
+        String requestJsonOnlyKeyword = "{\"keyword\":\"又要修改的分类\"}";
+        mockMvc.perform(post("/rs/update/3")
+                .content(requestJsonOnlyKeyword)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/list/3"))
+                .andExpect(jsonPath("$.eventName", is("第三条事件")))
+                .andExpect(jsonPath("$.keyword", is("又要修改的分类")))
+                .andExpect(status().isOk());
+    }
 }
