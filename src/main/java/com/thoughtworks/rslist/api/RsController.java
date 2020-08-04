@@ -46,4 +46,12 @@ public class RsController {
         String keywordToUpdate = rsEvent.getKeyword() == null ? rsEventToUpdate.getKeyword() : rsEvent.getKeyword();
         rsList.set(index - 1, new RsEvent(eventNameToUpdate, keywordToUpdate));
     }
+
+    @PostMapping("/rs/delete/{index}")
+    public void deleteRsEvent(@PathVariable int index) {
+        if (index > rsList.size()) {
+            throw new RuntimeException("索引超出列表长度");
+        }
+        rsList.remove(index - 1);
+    }
 }
