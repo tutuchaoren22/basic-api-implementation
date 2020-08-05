@@ -4,10 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Data
 @NoArgsConstructor
@@ -29,6 +26,7 @@ public class User {
     private String email;
 
     @NonNull
+    @Pattern(regexp = "1\\d{10}")
     private String phone;
 
     private int votes = 10;
