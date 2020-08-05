@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.validation.constraints.*;
@@ -40,6 +41,7 @@ public class User {
         this.phone = phone;
     }
 
+    @JsonProperty("user_name")
     public String getUserName() {
         return userName;
     }
@@ -48,6 +50,7 @@ public class User {
         this.userName = userName;
     }
 
+    @JsonProperty("user_age")
     public Integer getAge() {
         return age;
     }
@@ -56,6 +59,7 @@ public class User {
         this.age = age;
     }
 
+    @JsonProperty("user_gender")
     public String getGender() {
         return gender;
     }
@@ -64,6 +68,7 @@ public class User {
         this.gender = gender;
     }
 
+    @JsonProperty("user_email")
     public String getEmail() {
         return email;
     }
@@ -72,6 +77,7 @@ public class User {
         this.email = email;
     }
 
+    @JsonProperty("user_phone")
     public String getPhone() {
         return phone;
     }

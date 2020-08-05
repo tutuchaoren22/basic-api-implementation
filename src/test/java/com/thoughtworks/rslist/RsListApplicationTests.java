@@ -17,8 +17,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -83,14 +82,14 @@ class RsListApplicationTests {
 
     @Test
     void shouldUpdateRsEventGivenIndex() throws Exception {
-        User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
-        RsEvent rsEvent = new RsEvent("要修改的事件", "要修改的分类", user);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String eventJson = objectMapper.writeValueAsString(rsEvent);
+        String eventJson = "{\"eventName\":\"要修改的事件\"," +
+                " \"keyword\":\"要修改的分类\"," +
+                "\"user\" :{\"user_name\":\"xiaowang\", \"user_gender\":\"male\", \"user_age\":22, \"user_email\":\"d@b.com\", \"user_phone\":\"12345678904\"}}";
 
         mockMvc.perform(post("/rs/update/1")
                 .content(eventJson)
                 .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string("index", "0"))
                 .andExpect(status().isCreated());
         mockMvc.perform(get("/rs/list/1"))
                 .andExpect(jsonPath("$.eventName", is("要修改的事件")))
@@ -101,6 +100,7 @@ class RsListApplicationTests {
     @Test
     void shouldDeleteRsEventGivenIndex() throws Exception {
         mockMvc.perform(post("/rs/delete/1"))
+                .andExpect(header().string("index", "0"))
                 .andExpect(status().isCreated());
 
         mockMvc.perform(get("/rs/list"))
@@ -149,14 +149,14 @@ class RsListApplicationTests {
 
     @Test
     void ShouldAddRsEventWhenUserHasNotExist() throws Exception {
-        User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
-        RsEvent rsEvent = new RsEvent("添加一条热搜", "娱乐", user);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String userJson = objectMapper.writeValueAsString(rsEvent);
+        String eventJson = "{\"eventName\":\"添加一条热搜\"," +
+                " \"keyword\":\"娱乐\"," +
+                "\"user\" :{\"user_name\":\"xiaowang\", \"user_gender\":\"female\", \"user_age\":19, \"user_email\":\"a@thoughtworks.com\", \"user_phone\":\"18888888888\"}}";
 
         mockMvc.perform(post("/rs/add")
-                .content(userJson)
+                .content(eventJson)
                 .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string("index", String.valueOf(RsController.rsList.size() - 1)))
                 .andExpect(status().isCreated());
 
         assertEquals(1, UserRegisterController.userList.size());
@@ -164,21 +164,24 @@ class RsListApplicationTests {
 
     @Test
     void ShouldAddRsEventWhenUserHasExist() throws Exception {
-        User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
-        RsEvent rsEvent = new RsEvent("添加一条热搜", "娱乐", user);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String userJson = objectMapper.writeValueAsString(rsEvent);
+        String eventJson = "{\"eventName\":\"添加一条热搜\"," +
+                " \"keyword\":\"娱乐\"," +
+                "\"user\" :{\"user_name\":\"xiaowang\", \"user_gender\":\"female\", \"user_age\":19, \"user_email\":\"a@thoughtworks.com\", \"user_phone\":\"18888888888\"}}";
 
         mockMvc.perform(post("/rs/add")
-                .content(userJson)
+                .content(eventJson)
                 .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string("index", String.valueOf(RsController.rsList.size() - 1)))
                 .andExpect(status().isCreated());
 
-        RsEvent rsEvent2 = new RsEvent("添加第二条热搜", "生活", user);
-        String userJson2 = objectMapper.writeValueAsString(rsEvent2);
+        String eventJson2 = "{\"eventName\":\"添加第二条热搜\"," +
+                " \"keyword\":\"生活\"," +
+                "\"user\" :{\"user_name\":\"xiaowang\", \"user_gender\":\"female\", \"user_age\":19, \"user_email\":\"a@thoughtworks.com\", \"user_phone\":\"18888888888\"}}";
+
         mockMvc.perform(post("/rs/add")
-                .content(userJson2)
+                .content(eventJson2)
                 .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string("index", String.valueOf(RsController.rsList.size() - 1)))
                 .andExpect(status().isCreated());
 
         assertEquals(1, UserRegisterController.userList.size());

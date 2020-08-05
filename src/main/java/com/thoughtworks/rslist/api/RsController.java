@@ -12,9 +12,9 @@ import java.util.List;
 
 @RestController
 public class RsController {
-    private List<RsEvent> rsList = init();
+    public static List<RsEvent> rsList = init();
 
-    private List<RsEvent> init() {
+    private static List<RsEvent> init() {
         List<RsEvent> rsEvents = new ArrayList<>();
         User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
         rsEvents.add(new RsEvent("第一条事件", "分类一", user));
@@ -25,7 +25,7 @@ public class RsController {
 
     @GetMapping("/rs/list/{index}")
     public ResponseEntity<RsEvent> getOneRsEvent(@PathVariable int index) {
-        return new ResponseEntity<RsEvent>(rsList.get(index - 1), HttpStatus.OK);
+        return new ResponseEntity<>(rsList.get(index - 1), HttpStatus.OK);
     }
 
     @GetMapping("/rs/list")
@@ -50,7 +50,9 @@ public class RsController {
             UserRegisterController.userList.add(rsEvent.getUser());
         }
         rsList.add(rsEvent);
-        return ResponseEntity.created(null).build();
+        return ResponseEntity.created(null)
+                .header("index", String.valueOf(rsList.indexOf(rsEvent)))
+                .build();
     }
 
     @PostMapping("/rs/update/{index}")
@@ -61,8 +63,12 @@ public class RsController {
         RsEvent rsEventToUpdate = rsList.get(index - 1);
         String eventNameToUpdate = rsEvent.getEventName() == null ? rsEventToUpdate.getEventName() : rsEvent.getEventName();
         String keywordToUpdate = rsEvent.getKeyword() == null ? rsEventToUpdate.getKeyword() : rsEvent.getKeyword();
+        System.out.println(eventNameToUpdate);
+        System.out.println(keywordToUpdate);
         rsList.set(index - 1, new RsEvent(eventNameToUpdate, keywordToUpdate, rsEvent.getUser()));
-        return ResponseEntity.created(null).build();
+        return ResponseEntity.created(null)
+                .header("index", String.valueOf(index - 1))
+                .build();
     }
 
     @PostMapping("/rs/delete/{index}")
@@ -71,6 +77,8 @@ public class RsController {
             throw new RuntimeException("索引超出列表长度");
         }
         rsList.remove(index - 1);
-        return ResponseEntity.created(null).build();
+        return ResponseEntity.created(null)
+                .header("index", String.valueOf(index - 1))
+                .build();
     }
 }

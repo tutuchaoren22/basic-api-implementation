@@ -10,10 +10,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.hamcrest.Matchers.hasKey;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -23,8 +24,8 @@ public class UserRegisterTests {
     MockMvc mockMvc;
 
     @BeforeEach
-    void initMockMvc() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new UserRegisterController()).build();
+    void setUp() {
+        UserRegisterController.userList.clear();
     }
 
     @Test
@@ -33,9 +34,10 @@ public class UserRegisterTests {
         ObjectMapper objectMapper = new ObjectMapper();
         String userJson = objectMapper.writeValueAsString(user);
 
-        mockMvc.perform(post("/user")
+        mockMvc.perform(post("/login")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string("index", String.valueOf(UserRegisterController.userList.size() - 1)))
                 .andExpect(status().isCreated());
     }
 
@@ -45,7 +47,7 @@ public class UserRegisterTests {
         ObjectMapper objectMapper = new ObjectMapper();
         String userJson = objectMapper.writeValueAsString(user);
 
-        mockMvc.perform(post("/user")
+        mockMvc.perform(post("/login")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -57,7 +59,7 @@ public class UserRegisterTests {
         ObjectMapper objectMapper = new ObjectMapper();
         String userJson = objectMapper.writeValueAsString(user);
 
-        mockMvc.perform(post("/user")
+        mockMvc.perform(post("/login")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -69,7 +71,7 @@ public class UserRegisterTests {
         ObjectMapper objectMapper = new ObjectMapper();
         String userJson = objectMapper.writeValueAsString(user);
 
-        mockMvc.perform(post("/user")
+        mockMvc.perform(post("/login")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -81,7 +83,7 @@ public class UserRegisterTests {
         ObjectMapper objectMapper = new ObjectMapper();
         String userJson = objectMapper.writeValueAsString(user);
 
-        mockMvc.perform(post("/user")
+        mockMvc.perform(post("/login")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -93,7 +95,7 @@ public class UserRegisterTests {
         ObjectMapper objectMapper = new ObjectMapper();
         String userJson = objectMapper.writeValueAsString(user);
 
-        mockMvc.perform(post("/user")
+        mockMvc.perform(post("/login")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -105,7 +107,7 @@ public class UserRegisterTests {
         ObjectMapper objectMapper = new ObjectMapper();
         String userJson = objectMapper.writeValueAsString(user);
 
-        mockMvc.perform(post("/user")
+        mockMvc.perform(post("/login")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -117,7 +119,7 @@ public class UserRegisterTests {
         ObjectMapper objectMapper = new ObjectMapper();
         String userJson = objectMapper.writeValueAsString(user);
 
-        mockMvc.perform(post("/user")
+        mockMvc.perform(post("/login")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -129,7 +131,7 @@ public class UserRegisterTests {
         ObjectMapper objectMapper = new ObjectMapper();
         String userJson = objectMapper.writeValueAsString(user);
 
-        mockMvc.perform(post("/user")
+        mockMvc.perform(post("/login")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -141,9 +143,32 @@ public class UserRegisterTests {
         ObjectMapper objectMapper = new ObjectMapper();
         String userJson = objectMapper.writeValueAsString(user);
 
-        mockMvc.perform(post("/user")
+        mockMvc.perform(post("/login")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void shouldGetAllUsers() throws Exception {
+        User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String userJson = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(post("/login")
+                .content(userJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string("index", String.valueOf(UserRegisterController.userList.size() - 1)))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/users"))
+                .andExpect(jsonPath("$.[0]", hasKey("user_name")))
+                .andExpect(jsonPath("$.[0]", hasKey("user_age")))
+                .andExpect(jsonPath("$.[0]", hasKey("user_gender")))
+                .andExpect(jsonPath("$.[0]", hasKey("user_email")))
+                .andExpect(jsonPath("$.[0]", hasKey("user_phone")))
+                .andExpect(status().isOk());
+    }
+
+
 }
