@@ -14,9 +14,10 @@ public class RsController {
 
     private List<RsEvent> init() {
         List<RsEvent> rsEvents = new ArrayList<>();
-        rsEvents.add(new RsEvent("第一条事件", "分类一", new User()));
-        rsEvents.add(new RsEvent("第二条事件", "分类二", new User()));
-        rsEvents.add(new RsEvent("第三条事件", "分类三", new User()));
+        User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
+        rsEvents.add(new RsEvent("第一条事件", "分类一", user));
+        rsEvents.add(new RsEvent("第二条事件", "分类二", user));
+        rsEvents.add(new RsEvent("第三条事件", "分类三", user));
         return rsEvents;
     }
 
@@ -50,7 +51,7 @@ public class RsController {
     }
 
     @PostMapping("/rs/update/{index}")
-    public void updateRsEvent(@PathVariable int index, @RequestBody RsEvent rsEvent) {
+    public void updateRsEvent(@PathVariable int index, @RequestBody @Valid RsEvent rsEvent) {
         if (index > rsList.size()) {
             throw new RuntimeException("索引超出列表长度");
         }

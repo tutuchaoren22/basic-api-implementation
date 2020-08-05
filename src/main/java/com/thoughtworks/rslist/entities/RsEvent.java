@@ -13,8 +13,9 @@ public class RsEvent {
     @NotNull
     private String keyword;
 
+    @Valid
     @NotNull
-    private @Valid User user;
+    private User user;
 
     public RsEvent() {
     }

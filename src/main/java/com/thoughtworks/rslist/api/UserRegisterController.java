@@ -1,7 +1,6 @@
 package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.entities.User;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,11 +16,6 @@ public class UserRegisterController {
     @PostMapping("/user")
     public void userRegister(@RequestBody @Valid User user) {
         userList.add(user);
-    }
-
-    @GetMapping("/user/list")
-    public List<User> getUserList() {
-        return userList;
     }
 
 }

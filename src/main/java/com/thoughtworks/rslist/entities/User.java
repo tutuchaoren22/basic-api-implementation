@@ -1,29 +1,28 @@
 package com.thoughtworks.rslist.entities;
 
 import lombok.Data;
-import lombok.NonNull;
 
 import javax.validation.constraints.*;
 
 @Data
 public class User {
 
-    @NonNull
+    @NotNull
     @Size(max = 8)
     private String userName;
 
-    @NonNull
+    @NotNull
     @Min(18)
     @Max(100)
     private Integer age;
 
-    @NonNull
+    @NotNull
     private String gender;
 
     @Email
     private String email;
 
-    @NonNull
+    @NotNull
     @Pattern(regexp = "1\\d{10}")
     private String phone;
 
