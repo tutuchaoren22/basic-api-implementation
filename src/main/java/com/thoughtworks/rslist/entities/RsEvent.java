@@ -2,6 +2,7 @@ package com.thoughtworks.rslist.entities;
 
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -13,7 +14,7 @@ public class RsEvent {
     private String keyword;
 
     @NotNull
-    private User user;
+    private @Valid User user;
 
     public RsEvent() {
     }

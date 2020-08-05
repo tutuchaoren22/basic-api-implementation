@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 public class RsController {
-    private final List<RsEvent> rsList = init();
+    private List<RsEvent> rsList = init();
 
     private List<RsEvent> init() {
         List<RsEvent> rsEvents = new ArrayList<>();
@@ -36,9 +36,17 @@ public class RsController {
 
     @PostMapping("/rs/add")
     public void addRsEvent(@RequestBody @Valid RsEvent rsEvent) {
+        boolean hasExist = false;
+        for (User user : UserRegisterController.userList) {
+            if (rsEvent.getUser().getUserName().equals(user.getUserName())) {
+                hasExist = true;
+                break;
+            }
+        }
+        if (!hasExist) {
+            UserRegisterController.userList.add(rsEvent.getUser());
+        }
         rsList.add(rsEvent);
-//        如果userName已存在在user列表中的话则只需添加热搜事件到热搜事件列表，
-//        如果userName不存在，则将User添加到热搜事件列表中（相当于注册用户）
     }
 
     @PostMapping("/rs/update/{index}")
