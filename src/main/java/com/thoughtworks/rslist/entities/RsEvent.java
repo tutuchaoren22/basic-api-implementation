@@ -11,7 +11,7 @@ public class RsEvent {
 
     @NotNull
     private String keyword;
-    
+
     @NotNull
     private User user;
 

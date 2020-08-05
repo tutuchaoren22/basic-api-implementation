@@ -37,6 +37,8 @@ public class RsController {
     @PostMapping("/rs/add")
     public void addRsEvent(@RequestBody @Valid RsEvent rsEvent) {
         rsList.add(rsEvent);
+//        如果userName已存在在user列表中的话则只需添加热搜事件到热搜事件列表，
+//        如果userName不存在，则将User添加到热搜事件列表中（相当于注册用户）
     }
 
     @PostMapping("/rs/update/{index}")
