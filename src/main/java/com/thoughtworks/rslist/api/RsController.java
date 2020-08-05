@@ -14,7 +14,7 @@ import java.util.List;
 public class RsController {
     public static List<RsEvent> rsList = init();
 
-    private static List<RsEvent> init() {
+    public static List<RsEvent> init() {
         List<RsEvent> rsEvents = new ArrayList<>();
         User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
         rsEvents.add(new RsEvent("第一条事件", "分类一", user));
@@ -51,7 +51,7 @@ public class RsController {
         }
         rsList.add(rsEvent);
         return ResponseEntity.created(null)
-                .header("index", String.valueOf(rsList.indexOf(rsEvent)))
+                .header("index", String.valueOf(rsList.size() - 1))
                 .build();
     }
 

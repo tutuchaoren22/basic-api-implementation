@@ -5,8 +5,7 @@ import com.thoughtworks.rslist.api.RsController;
 import com.thoughtworks.rslist.api.UserRegisterController;
 import com.thoughtworks.rslist.entities.RsEvent;
 import com.thoughtworks.rslist.entities.User;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -21,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class RsListApplicationTests {
 
     private MockMvc mockMvc;
@@ -31,6 +31,7 @@ class RsListApplicationTests {
     }
 
     @Test
+    @Order(1)
     void shouldGetOneRsEvent() throws Exception {
         mockMvc.perform(get("/rs/list/1"))
                 .andExpect(jsonPath("$.eventName", is("第一条事件")))
@@ -50,6 +51,7 @@ class RsListApplicationTests {
     }
 
     @Test
+    @Order(2)
     void shouldGetRsEventGivenStartAndEnd() throws Exception {
         mockMvc.perform(get("/rs/list/?start=1&end=2"))
                 .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
@@ -81,6 +83,7 @@ class RsListApplicationTests {
     }
 
     @Test
+    @Order(3)
     void shouldUpdateRsEventGivenIndex() throws Exception {
         String eventJson = "{\"eventName\":\"要修改的事件\"," +
                 " \"keyword\":\"要修改的分类\"," +
@@ -98,6 +101,7 @@ class RsListApplicationTests {
     }
 
     @Test
+    @Order(3)
     void shouldDeleteRsEventGivenIndex() throws Exception {
         mockMvc.perform(post("/rs/delete/1"))
                 .andExpect(header().string("index", "0"))
@@ -110,6 +114,7 @@ class RsListApplicationTests {
     }
 
     @Test
+    @Order(4)
     void eventNameShouldNotNull() throws Exception {
         User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
         RsEvent rsEvent = new RsEvent(null, "娱乐", user);
@@ -123,6 +128,7 @@ class RsListApplicationTests {
     }
 
     @Test
+    @Order(5)
     void keywordShouldNotNull() throws Exception {
         User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
         RsEvent rsEvent = new RsEvent("添加一条热搜", null, user);
@@ -136,6 +142,7 @@ class RsListApplicationTests {
     }
 
     @Test
+    @Order(6)
     void userShouldNotNull() throws Exception {
         RsEvent rsEvent = new RsEvent("添加一条热搜", "娱乐", null);
         ObjectMapper objectMapper = new ObjectMapper();
@@ -148,6 +155,7 @@ class RsListApplicationTests {
     }
 
     @Test
+    @Order(7)
     void ShouldAddRsEventWhenUserHasNotExist() throws Exception {
         String eventJson = "{\"eventName\":\"添加一条热搜\"," +
                 " \"keyword\":\"娱乐\"," +
@@ -163,6 +171,7 @@ class RsListApplicationTests {
     }
 
     @Test
+    @Order(8)
     void ShouldAddRsEventWhenUserHasExist() throws Exception {
         String eventJson = "{\"eventName\":\"添加一条热搜\"," +
                 " \"keyword\":\"娱乐\"," +
