@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -36,14 +36,17 @@ class RsListApplicationTests {
         mockMvc.perform(get("/rs/list/1"))
                 .andExpect(jsonPath("$.eventName", is("第一条事件")))
                 .andExpect(jsonPath("$.keyword", is("分类一")))
+                .andExpect(jsonPath("$", not(hasKey("user"))))
                 .andExpect(status().isOk());
         mockMvc.perform(get("/rs/list/2"))
                 .andExpect(jsonPath("$.eventName", is("第二条事件")))
                 .andExpect(jsonPath("$.keyword", is("分类二")))
+                .andExpect(jsonPath("$", not(hasKey("user"))))
                 .andExpect(status().isOk());
         mockMvc.perform(get("/rs/list/3"))
                 .andExpect(jsonPath("$.eventName", is("第三条事件")))
                 .andExpect(jsonPath("$.keyword", is("分类三")))
+                .andExpect(jsonPath("$", not(hasKey("user"))))
                 .andExpect(status().isOk());
     }
 
@@ -52,22 +55,29 @@ class RsListApplicationTests {
         mockMvc.perform(get("/rs/list/?start=1&end=2"))
                 .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
                 .andExpect(jsonPath("$[0].keyword", is("分类一")))
+                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[1].eventName", is("第二条事件")))
                 .andExpect(jsonPath("$[1].keyword", is("分类二")))
+                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
                 .andExpect(status().isOk());
         mockMvc.perform(get("/rs/list/?start=2&end=3"))
                 .andExpect(jsonPath("$[0].eventName", is("第二条事件")))
                 .andExpect(jsonPath("$[0].keyword", is("分类二")))
+                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[1].eventName", is("第三条事件")))
                 .andExpect(jsonPath("$[1].keyword", is("分类三")))
+                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
                 .andExpect(status().isOk());
         mockMvc.perform(get("/rs/list/?start=1&end=3"))
                 .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
                 .andExpect(jsonPath("$[0].keyword", is("分类一")))
+                .andExpect(jsonPath("$[0]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[1].eventName", is("第二条事件")))
                 .andExpect(jsonPath("$[1].keyword", is("分类二")))
+                .andExpect(jsonPath("$[1]", not(hasKey("user"))))
                 .andExpect(jsonPath("$[2].eventName", is("第三条事件")))
                 .andExpect(jsonPath("$[2].keyword", is("分类三")))
+                .andExpect(jsonPath("$[2]", not(hasKey("user"))))
                 .andExpect(status().isOk());
     }
 
