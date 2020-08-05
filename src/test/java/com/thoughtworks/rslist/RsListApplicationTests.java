@@ -146,4 +146,17 @@ class RsListApplicationTests {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void keywordShouldNotNull() throws Exception {
+        User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
+        RsEvent rsEvent = new RsEvent("添加一条热搜", null, user);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String userJson = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/add")
+                .content(userJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
 }
