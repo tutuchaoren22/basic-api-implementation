@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.api;
 
+import com.thoughtworks.rslist.entities.RsEvent;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
