@@ -16,9 +16,10 @@ public class User {
     @Size(max = 8)
     private String userName;
 
+    @NonNull
     @Min(18)
     @Max(100)
-    private int age;
+    private Integer age;
 
     @NonNull
     private String gender;
@@ -26,7 +27,7 @@ public class User {
     private String phone;
     private int votes = 10;
 
-    public User(String userName, int age, String gender, String email, String phone) {
+    public User(String userName, Integer age, String gender, String email, String phone) {
         this.userName = userName;
         this.age = age;
         this.gender = gender;
