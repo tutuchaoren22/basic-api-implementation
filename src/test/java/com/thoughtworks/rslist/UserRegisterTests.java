@@ -63,5 +63,17 @@ public class UserRegisterTests {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void genderShouldNotNull() throws Exception {
+        User user = new User("xiaowang", 19, null, "a@thoughtworks.com", "18888888888");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String userJson = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(post("/user")
+                .content(userJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
 
 }
