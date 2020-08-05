@@ -5,12 +5,15 @@ import com.thoughtworks.rslist.api.RsController;
 import com.thoughtworks.rslist.api.UserRegisterController;
 import com.thoughtworks.rslist.entities.RsEvent;
 import com.thoughtworks.rslist.entities.User;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,12 +26,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class RsListApplicationTests {
 
+    @Autowired
     private MockMvc mockMvc;
 
-    @BeforeEach
-    void initMockMvc() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new RsController()).build();
-    }
+//    @BeforeEach
+//    void initMockMvc() {
+//        mockMvc = MockMvcBuilders.standaloneSetup(new RsController()).build();
+//    }
 
     @Test
     @Order(1)
@@ -194,6 +198,34 @@ class RsListApplicationTests {
                 .andExpect(status().isCreated());
 
         assertEquals(1, UserRegisterController.userList.size());
+    }
+
+    @Test
+    @Order(9)
+    void ShouldReturnExceptionWhenGetEventWithInvalidIndex() throws Exception {
+        mockMvc.perform(get("/rs/list/10"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid index")));
+    }
+
+    @Test
+    @Order(10)
+    void ShouldReturnExceptionWhenGetEventWithInvalidParam() throws Exception {
+        mockMvc.perform(get("/rs/list/?start=-1&end=10"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid request param")));
+    }
+
+    @Test
+    @Order(11)
+    void shouldReturnExceptionwhenEventIsInvalid() throws Exception {
+        String rsEventJson = "{\"id\":4,\"eventName\":null,\"keyWord\":\"娱乐\"," +
+                "\"user\":{\"user_name\":\"wang\",\"user_gender\":\"male\",\"user_age\":19," +
+                "\"user_email\":\"A@thoughtworks.com\",\"user_phone\":\"11234567890\"}}";
+
+        mockMvc.perform(post("/rs/add").content(rsEventJson).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid param")));
     }
 
 }

@@ -2,8 +2,12 @@ package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.entities.RsEvent;
 import com.thoughtworks.rslist.entities.User;
+import com.thoughtworks.rslist.exception.InvalidIndexException;
+import com.thoughtworks.rslist.exception.InvalidParamException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,21 +28,30 @@ public class RsController {
     }
 
     @GetMapping("/rs/list/{index}")
-    public ResponseEntity<RsEvent> getOneRsEvent(@PathVariable int index) {
+    public ResponseEntity getOneRsEvent(@PathVariable int index) throws InvalidIndexException {
+        if (index > rsList.size()) {
+            throw new InvalidIndexException("invalid index");
+        }
         return new ResponseEntity<>(rsList.get(index - 1), HttpStatus.OK);
     }
 
     @GetMapping("/rs/list")
     public ResponseEntity<List<RsEvent>> getRsEvent(@RequestParam(required = false) Integer start,
-                                                    @RequestParam(required = false) Integer end) {
+                                                    @RequestParam(required = false) Integer end) throws InvalidIndexException {
         if (start == null || end == null) {
             return new ResponseEntity<>(rsList, HttpStatus.OK);
+        }
+        if (start < 1 || end > rsList.size()) {
+            throw new InvalidIndexException("invalid request param");
         }
         return new ResponseEntity<>(rsList.subList(start - 1, end), HttpStatus.OK);
     }
 
     @PostMapping("/rs/add")
-    public ResponseEntity addRsEvent(@RequestBody @Valid RsEvent rsEvent) {
+    public ResponseEntity addRsEvent(@RequestBody @Validated RsEvent rsEvent, BindingResult bindingResult) throws InvalidParamException {
+        if (bindingResult.hasErrors()) {
+            throw new InvalidParamException("invalid param");
+        }
         boolean hasExist = false;
         for (User user : UserRegisterController.userList) {
             if (rsEvent.getUser().getUserName().equals(user.getUserName())) {

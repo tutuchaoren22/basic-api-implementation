@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -50,7 +51,8 @@ public class UserRegisterTests {
         mockMvc.perform(post("/login")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 
     @Test
@@ -62,7 +64,8 @@ public class UserRegisterTests {
         mockMvc.perform(post("/login")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 
     @Test
@@ -74,7 +77,8 @@ public class UserRegisterTests {
         mockMvc.perform(post("/login")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 
     @Test
@@ -86,7 +90,8 @@ public class UserRegisterTests {
         mockMvc.perform(post("/login")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 
     @Test
@@ -98,7 +103,8 @@ public class UserRegisterTests {
         mockMvc.perform(post("/login")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 
     @Test
@@ -110,7 +116,8 @@ public class UserRegisterTests {
         mockMvc.perform(post("/login")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 
     @Test
@@ -122,7 +129,8 @@ public class UserRegisterTests {
         mockMvc.perform(post("/login")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 
     @Test
@@ -134,7 +142,8 @@ public class UserRegisterTests {
         mockMvc.perform(post("/login")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 
     @Test
@@ -146,7 +155,8 @@ public class UserRegisterTests {
         mockMvc.perform(post("/login")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 
     @Test
