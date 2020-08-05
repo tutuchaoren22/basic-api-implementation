@@ -1,13 +1,11 @@
 package com.thoughtworks.rslist.entities;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import javax.validation.constraints.*;
 
 @Data
-@NoArgsConstructor
 public class User {
 
     @NonNull
@@ -31,6 +29,10 @@ public class User {
 
     private int votes = 10;
 
+    public User() {
+
+    }
+
     public User(String userName, Integer age, String gender, String email, String phone) {
         this.userName = userName;
         this.age = age;
@@ -38,4 +40,5 @@ public class User {
         this.email = email;
         this.phone = phone;
     }
+
 }

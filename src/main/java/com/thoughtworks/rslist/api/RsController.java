@@ -1,8 +1,10 @@
 package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.entities.RsEvent;
+import com.thoughtworks.rslist.entities.User;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,9 +14,9 @@ public class RsController {
 
     private List<RsEvent> init() {
         List<RsEvent> rsEvents = new ArrayList<>();
-        rsEvents.add(new RsEvent("第一条事件", "分类一"));
-        rsEvents.add(new RsEvent("第二条事件", "分类二"));
-        rsEvents.add(new RsEvent("第三条事件", "分类三"));
+        rsEvents.add(new RsEvent("第一条事件", "分类一", new User()));
+        rsEvents.add(new RsEvent("第二条事件", "分类二", new User()));
+        rsEvents.add(new RsEvent("第三条事件", "分类三", new User()));
         return rsEvents;
     }
 
@@ -33,7 +35,7 @@ public class RsController {
     }
 
     @PostMapping("/rs/add")
-    public void addRsEvent(@RequestBody RsEvent rsEvent) {
+    public void addRsEvent(@RequestBody @Valid RsEvent rsEvent) {
         rsList.add(rsEvent);
     }
 
@@ -45,7 +47,7 @@ public class RsController {
         RsEvent rsEventToUpdate = rsList.get(index - 1);
         String eventNameToUpdate = rsEvent.getEventName() == null ? rsEventToUpdate.getEventName() : rsEvent.getEventName();
         String keywordToUpdate = rsEvent.getKeyword() == null ? rsEventToUpdate.getKeyword() : rsEvent.getKeyword();
-        rsList.set(index - 1, new RsEvent(eventNameToUpdate, keywordToUpdate));
+        rsList.set(index - 1, new RsEvent(eventNameToUpdate, keywordToUpdate, rsEvent.getUser()));
     }
 
     @PostMapping("/rs/delete/{index}")

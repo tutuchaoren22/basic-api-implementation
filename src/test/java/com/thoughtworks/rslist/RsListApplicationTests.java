@@ -1,6 +1,9 @@
 package com.thoughtworks.rslist;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.api.RsController;
+import com.thoughtworks.rslist.entities.RsEvent;
+import com.thoughtworks.rslist.entities.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -129,4 +132,18 @@ class RsListApplicationTests {
                 .andExpect(jsonPath("$[0].keyword", is("分类二")))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void eventNameShouldNotNull() throws Exception {
+        User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
+        RsEvent rsEvent = new RsEvent(null, "娱乐", user);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String userJson = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rs/add")
+                .content(userJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
 }
