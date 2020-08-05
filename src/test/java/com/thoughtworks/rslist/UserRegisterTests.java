@@ -51,5 +51,17 @@ public class UserRegisterTests {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void userNameSizeShouldLessThanEight() throws Exception {
+        User user = new User("xiaowangaa", 19, "female", "a@thoughtworks.com", "18888888888");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String userJson = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(post("/user")
+                .content(userJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
 
 }
