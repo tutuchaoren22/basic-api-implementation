@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
@@ -23,6 +24,8 @@ public class User {
 
     @NonNull
     private String gender;
+
+    @Email
     private String email;
     private String phone;
     private int votes = 10;
