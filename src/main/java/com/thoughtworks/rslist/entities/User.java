@@ -27,7 +27,10 @@ public class User {
 
     @Email
     private String email;
+
+    @NonNull
     private String phone;
+
     private int votes = 10;
 
     public User(String userName, Integer age, String gender, String email, String phone) {
