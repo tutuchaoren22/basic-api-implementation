@@ -36,7 +36,7 @@ public class UserRegisterTests {
         mockMvc.perform(post("/user")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test

@@ -81,7 +81,7 @@ class RsListApplicationTests {
         mockMvc.perform(post("/rs/update/1")
                 .content(eventJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         mockMvc.perform(get("/rs/list/1"))
                 .andExpect(jsonPath("$.eventName", is("要修改的事件")))
                 .andExpect(jsonPath("$.keyword", is("要修改的分类")))
@@ -91,7 +91,7 @@ class RsListApplicationTests {
     @Test
     void shouldDeleteRsEventGivenIndex() throws Exception {
         mockMvc.perform(post("/rs/delete/1"))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         mockMvc.perform(get("/rs/list"))
                 .andExpect(jsonPath("$[0].eventName", is("第二条事件")))
@@ -147,7 +147,7 @@ class RsListApplicationTests {
         mockMvc.perform(post("/rs/add")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         assertEquals(1, UserRegisterController.userList.size());
     }
@@ -162,14 +162,14 @@ class RsListApplicationTests {
         mockMvc.perform(post("/rs/add")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         RsEvent rsEvent2 = new RsEvent("添加第二条热搜", "生活", user);
         String userJson2 = objectMapper.writeValueAsString(rsEvent2);
         mockMvc.perform(post("/rs/add")
                 .content(userJson2)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         assertEquals(1, UserRegisterController.userList.size());
     }

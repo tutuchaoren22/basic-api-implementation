@@ -2,6 +2,8 @@ package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.entities.RsEvent;
 import com.thoughtworks.rslist.entities.User;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,21 +24,21 @@ public class RsController {
     }
 
     @GetMapping("/rs/list/{index}")
-    public RsEvent getOneRsEvent(@PathVariable int index) {
-        return rsList.get(index - 1);
+    public ResponseEntity<RsEvent> getOneRsEvent(@PathVariable int index) {
+        return new ResponseEntity<RsEvent>(rsList.get(index - 1), HttpStatus.OK);
     }
 
     @GetMapping("/rs/list")
-    public List<RsEvent> getRsEvent(@RequestParam(required = false) Integer start,
-                                    @RequestParam(required = false) Integer end) {
+    public ResponseEntity<List<RsEvent>> getRsEvent(@RequestParam(required = false) Integer start,
+                                                    @RequestParam(required = false) Integer end) {
         if (start == null || end == null) {
-            return rsList;
+            return new ResponseEntity<>(rsList, HttpStatus.OK);
         }
-        return rsList.subList(start - 1, end);
+        return new ResponseEntity<>(rsList.subList(start - 1, end), HttpStatus.OK);
     }
 
     @PostMapping("/rs/add")
-    public void addRsEvent(@RequestBody @Valid RsEvent rsEvent) {
+    public ResponseEntity addRsEvent(@RequestBody @Valid RsEvent rsEvent) {
         boolean hasExist = false;
         for (User user : UserRegisterController.userList) {
             if (rsEvent.getUser().getUserName().equals(user.getUserName())) {
@@ -48,10 +50,11 @@ public class RsController {
             UserRegisterController.userList.add(rsEvent.getUser());
         }
         rsList.add(rsEvent);
+        return ResponseEntity.created(null).build();
     }
 
     @PostMapping("/rs/update/{index}")
-    public void updateRsEvent(@PathVariable int index, @RequestBody @Valid RsEvent rsEvent) {
+    public ResponseEntity updateRsEvent(@PathVariable int index, @RequestBody @Valid RsEvent rsEvent) {
         if (index > rsList.size()) {
             throw new RuntimeException("索引超出列表长度");
         }
@@ -59,13 +62,15 @@ public class RsController {
         String eventNameToUpdate = rsEvent.getEventName() == null ? rsEventToUpdate.getEventName() : rsEvent.getEventName();
         String keywordToUpdate = rsEvent.getKeyword() == null ? rsEventToUpdate.getKeyword() : rsEvent.getKeyword();
         rsList.set(index - 1, new RsEvent(eventNameToUpdate, keywordToUpdate, rsEvent.getUser()));
+        return ResponseEntity.created(null).build();
     }
 
     @PostMapping("/rs/delete/{index}")
-    public void deleteRsEvent(@PathVariable int index) {
+    public ResponseEntity deleteRsEvent(@PathVariable int index) {
         if (index > rsList.size()) {
             throw new RuntimeException("索引超出列表长度");
         }
         rsList.remove(index - 1);
+        return ResponseEntity.created(null).build();
     }
 }
