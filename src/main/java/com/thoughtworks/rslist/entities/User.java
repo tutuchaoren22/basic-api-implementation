@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
@@ -16,6 +17,7 @@ public class User {
     private String userName;
 
     @Min(18)
+    @Max(100)
     private int age;
 
     @NonNull
