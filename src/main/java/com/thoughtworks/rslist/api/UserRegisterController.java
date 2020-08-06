@@ -54,4 +54,9 @@ public class UserRegisterController {
         return new ResponseEntity(userRepository.findById(index), HttpStatus.OK);
     }
 
+    @PostMapping("/remove/{index}")
+    public void removeUserById(@PathVariable int index) {
+        userRepository.deleteById(index);
+    }
+
 }

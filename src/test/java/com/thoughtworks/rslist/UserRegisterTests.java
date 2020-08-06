@@ -229,5 +229,22 @@ public class UserRegisterTests {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void shouldRemoveUserById() throws Exception {
+        User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String userJson = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(post("/login")
+                .content(userJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(post("/remove/1"))
+                .andExpect(status().isOk());
+
+        List<UserEntity> users = userRepository.findAll();
+        assertEquals(0, users.size());
+    }
 
 }
