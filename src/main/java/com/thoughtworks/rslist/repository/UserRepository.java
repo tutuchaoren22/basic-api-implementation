@@ -7,4 +7,8 @@ import java.util.List;
 
 public interface UserRepository extends CrudRepository<UserEntity, Integer> {
     List<UserEntity> findAll();
+
+    UserEntity findByUserName(String userName);
+
+    UserEntity findById(int Id);
 }

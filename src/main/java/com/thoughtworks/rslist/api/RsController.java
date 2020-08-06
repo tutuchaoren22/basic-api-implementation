@@ -1,13 +1,14 @@
 package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.entities.RsEvent;
+import com.thoughtworks.rslist.entities.RsEventEntity;
 import com.thoughtworks.rslist.entities.User;
 import com.thoughtworks.rslist.exception.InvalidIndexException;
 import com.thoughtworks.rslist.exception.InvalidParamException;
+import com.thoughtworks.rslist.repository.RsEventRepository;
+import com.thoughtworks.rslist.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -16,7 +17,16 @@ import java.util.List;
 
 @RestController
 public class RsController {
+    private final UserRepository userRepository;
+    private final RsEventRepository rsEventRepository;
+
+
     public static List<RsEvent> rsList = init();
+
+    public RsController(UserRepository userRepository, RsEventRepository rsEventRepository) {
+        this.userRepository = userRepository;
+        this.rsEventRepository = rsEventRepository;
+    }
 
     public static List<RsEvent> init() {
         List<RsEvent> rsEvents = new ArrayList<>();
@@ -48,24 +58,14 @@ public class RsController {
     }
 
     @PostMapping("/rs/add")
-    public ResponseEntity addRsEvent(@RequestBody @Validated RsEvent rsEvent, BindingResult bindingResult) throws InvalidParamException {
-        if (bindingResult.hasErrors()) {
-            throw new InvalidParamException("invalid param");
+    public ResponseEntity addRsEvent(@RequestBody @Valid RsEventEntity rsEventEntity) throws InvalidParamException {
+        if (userRepository.existsById(rsEventEntity.getUserId())) {
+            RsEventEntity saveRsEvent = rsEventRepository.save(rsEventEntity);
+            return ResponseEntity.created(null)
+                    .header("index", String.valueOf(saveRsEvent.getId()))
+                    .build();
         }
-        boolean hasExist = false;
-        for (User user : UserRegisterController.userList) {
-            if (rsEvent.getUser().getUserName().equals(user.getUserName())) {
-                hasExist = true;
-                break;
-            }
-        }
-        if (!hasExist) {
-            UserRegisterController.userList.add(rsEvent.getUser());
-        }
-        rsList.add(rsEvent);
-        return ResponseEntity.created(null)
-                .header("index", String.valueOf(rsList.size() - 1))
-                .build();
+        throw new InvalidParamException("invalid user id");
     }
 
     @PostMapping("/rs/update/{index}")

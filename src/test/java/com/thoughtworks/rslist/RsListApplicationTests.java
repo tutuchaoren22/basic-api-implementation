@@ -1,19 +1,20 @@
 package com.thoughtworks.rslist;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.thoughtworks.rslist.api.RsController;
-import com.thoughtworks.rslist.api.UserRegisterController;
 import com.thoughtworks.rslist.entities.RsEvent;
+import com.thoughtworks.rslist.entities.RsEventEntity;
 import com.thoughtworks.rslist.entities.User;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import com.thoughtworks.rslist.entities.UserEntity;
+import com.thoughtworks.rslist.repository.RsEventRepository;
+import com.thoughtworks.rslist.repository.UserRepository;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,11 +29,20 @@ class RsListApplicationTests {
 
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    RsEventRepository rsEventRepository;
+    @Autowired
+    UserRepository userRepository;
 
-//    @BeforeEach
+    //    @BeforeEach
 //    void initMockMvc() {
 //        mockMvc = MockMvcBuilders.standaloneSetup(new RsController()).build();
 //    }
+    @AfterEach
+    void cleanup() {
+        rsEventRepository.deleteAll();
+        userRepository.deleteAll();
+    }
 
     @Test
     @Order(1)
@@ -161,43 +171,49 @@ class RsListApplicationTests {
     @Test
     @Order(7)
     void ShouldAddRsEventWhenUserHasNotExist() throws Exception {
-        String eventJson = "{\"eventName\":\"添加一条热搜\"," +
-                " \"keyword\":\"娱乐\"," +
-                "\"user\" :{\"user_name\":\"xiaowang\", \"user_gender\":\"female\", \"user_age\":19, \"user_email\":\"a@thoughtworks.com\", \"user_phone\":\"18888888888\"}}";
+        RsEventEntity rsEventEntity = RsEventEntity.builder()
+                .eventName("添加一条热搜")
+                .keyword("娱乐")
+                .userId(1)
+                .build();
+        ObjectMapper objectMapper = new ObjectMapper();
+        String eventJson = objectMapper.writeValueAsString(rsEventEntity);
 
         mockMvc.perform(post("/rs/add")
                 .content(eventJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(header().string("index", String.valueOf(RsController.rsList.size() - 1)))
-                .andExpect(status().isCreated());
+                .andExpect(status().isBadRequest());
 
-        assertEquals(1, UserRegisterController.userList.size());
+        List<RsEventEntity> rsEvents = rsEventRepository.findAll();
+        assertEquals(0, rsEvents.size());
     }
 
     @Test
     @Order(8)
     void ShouldAddRsEventWhenUserHasExist() throws Exception {
-        String eventJson = "{\"eventName\":\"添加一条热搜\"," +
-                " \"keyword\":\"娱乐\"," +
-                "\"user\" :{\"user_name\":\"xiaowang\", \"user_gender\":\"female\", \"user_age\":19, \"user_email\":\"a@thoughtworks.com\", \"user_phone\":\"18888888888\"}}";
+        User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String userJson = objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/login")
+                .content(userJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+        List<UserEntity> users = userRepository.findAll();
+        assertEquals(1, users.size());
+        assertEquals(1, users.get(0).getId());
 
+        RsEventEntity rsEventEntity = RsEventEntity.builder()
+                .eventName("添加一条热搜")
+                .keyword("娱乐")
+                .userId(1)
+                .build();
+        String eventJson = objectMapper.writeValueAsString(rsEventEntity);
         mockMvc.perform(post("/rs/add")
                 .content(eventJson)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(header().string("index", String.valueOf(RsController.rsList.size() - 1)))
                 .andExpect(status().isCreated());
-
-        String eventJson2 = "{\"eventName\":\"添加第二条热搜\"," +
-                " \"keyword\":\"生活\"," +
-                "\"user\" :{\"user_name\":\"xiaowang\", \"user_gender\":\"female\", \"user_age\":19, \"user_email\":\"a@thoughtworks.com\", \"user_phone\":\"18888888888\"}}";
-
-        mockMvc.perform(post("/rs/add")
-                .content(eventJson2)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(header().string("index", String.valueOf(RsController.rsList.size() - 1)))
-                .andExpect(status().isCreated());
-
-        assertEquals(1, UserRegisterController.userList.size());
+        List<RsEventEntity> rsEvents = rsEventRepository.findAll();
+        assertEquals(1, rsEvents.size());
     }
 
     @Test
