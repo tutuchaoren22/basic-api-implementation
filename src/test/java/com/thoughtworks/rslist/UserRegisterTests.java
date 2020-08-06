@@ -2,8 +2,10 @@ package com.thoughtworks.rslist;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.api.UserRegisterController;
+import com.thoughtworks.rslist.entities.RsEventEntity;
 import com.thoughtworks.rslist.entities.User;
 import com.thoughtworks.rslist.entities.UserEntity;
+import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +33,8 @@ public class UserRegisterTests {
     MockMvc mockMvc;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    RsEventRepository rsEventRepository;
 
     @BeforeEach
     void setUp() {
@@ -40,6 +44,7 @@ public class UserRegisterTests {
     @AfterEach
     void cleanup() {
         userRepository.deleteAll();
+        rsEventRepository.deleteAll();
     }
 
     @Test
@@ -234,17 +239,28 @@ public class UserRegisterTests {
         User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
         ObjectMapper objectMapper = new ObjectMapper();
         String userJson = objectMapper.writeValueAsString(user);
-
         mockMvc.perform(post("/login")
                 .content(userJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
 
+        RsEventEntity rsEventEntity = RsEventEntity.builder()
+                .eventName("添加一条热搜")
+                .keyword("娱乐")
+                .userId(1)
+                .build();
+        String eventJson = objectMapper.writeValueAsString(rsEventEntity);
+        mockMvc.perform(post("/rs/add")
+                .content(eventJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
         mockMvc.perform(post("/remove/1"))
                 .andExpect(status().isOk());
-
         List<UserEntity> users = userRepository.findAll();
         assertEquals(0, users.size());
+        List<RsEventEntity> events = rsEventRepository.findAll();
+        assertEquals(0, events.size());
     }
 
 }
