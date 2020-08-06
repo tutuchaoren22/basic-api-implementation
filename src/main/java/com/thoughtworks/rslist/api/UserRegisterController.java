@@ -5,10 +5,7 @@ import com.thoughtworks.rslist.entities.UserEntity;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -50,6 +47,11 @@ public class UserRegisterController {
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers() {
         return new ResponseEntity<>(userList, HttpStatus.OK);
+    }
+
+    @GetMapping("/user/{index}")
+    public ResponseEntity<UserEntity> getUserById(@PathVariable int index) {
+        return new ResponseEntity(userRepository.findById(index), HttpStatus.OK);
     }
 
 }

@@ -208,4 +208,26 @@ public class UserRegisterTests {
         assertEquals(1, users.size());
         assertEquals("xiaowang", users.get(0).getUserName());
     }
+
+    @Test
+    void shouldGetUserById() throws Exception {
+        User user = new User("xiaowang", 19, "female", "a@thoughtworks.com", "18888888888");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String userJson = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(post("/login")
+                .content(userJson)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/user/1"))
+                .andExpect(jsonPath("$.userName", is("xiaowang")))
+                .andExpect(jsonPath("$.age", is(19)))
+                .andExpect(jsonPath("$.gender", is("female")))
+                .andExpect(jsonPath("$.email", is("a@thoughtworks.com")))
+                .andExpect(jsonPath("$.phone", is("18888888888")))
+                .andExpect(status().isOk());
+    }
+
+
 }
